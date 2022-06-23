@@ -3,3 +3,40 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: testdeploy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: blueapp
+  name: blueapp
+  namespace: testdeploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blueapp
+  template:
+    metadata:
+      labels:
+        app: blueapp
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        ports:
+        - containerPort: 80
+          name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blueapp-service
+spec:
+  selector:
+    app: blueapp
+  ports:
+  - name: webserver
+    protocol: TCP
+    port: 80
+    targetPort: http
